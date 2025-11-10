@@ -1,0 +1,1706 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EYT 个人天赋潜能测评</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#002FA7', // 克莱因蓝
+                        secondary: '#4A7F56', // 复古绿
+                        neutral: '#F5F5F0', // 米白色
+                        accent: '#D4AF37', // 金色点缀
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-in': 'slideIn 0.5s ease-in-out',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideIn: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-shadow {
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            }
+            .card-hover {
+                @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+            }
+            .btn-primary {
+                @apply bg-primary text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 hover:bg-opacity-90 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50;
+            }
+            .btn-secondary {
+                @apply bg-secondary text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 hover:bg-opacity-90 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-opacity-50;
+            }
+            .btn-outline {
+                @apply border border-primary text-primary px-6 py-3 rounded-lg font-medium transition-all duration-300 hover:bg-primary hover:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50;
+            }
+            .input-primary {
+                @apply border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent;
+            }
+            .progress-bar {
+                @apply h-2 bg-gray-200 rounded-full overflow-hidden;
+            }
+            .progress-value {
+                @apply h-full bg-primary transition-all duration-300;
+            }
+            .tab-active {
+                @apply border-b-2 border-primary text-primary;
+            }
+            .radio-btn {
+                @apply appearance-none w-5 h-5 border-2 border-gray-300 rounded-full mr-2 focus:outline-none focus:ring-2 focus:ring-primary;
+            }
+            .radio-btn:checked {
+                @apply border-primary bg-primary;
+            }
+            .radio-btn:checked + label {
+                @apply text-primary;
+            }
+        }
+    </style>
+</head>
+<body class="bg-neutral min-h-screen font-sans">
+    <!-- 导航栏 -->
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/409d05c776a847b99080490cf538927b~tplv-a9rns2rl98-image.image?rcl=20251110032542064C7DE5121761212BB8&rk3s=8e244e95&rrcfp=f06b921b&x-expires=1765308359&x-signature=YZrduL%2B9Hj7F6FsWvjSXdHB69no%3D" alt="EYT 个人天赋潜能测评" class="h-10 mr-3">
+                <span class="text-xl font-bold text-primary">EYT 个人天赋潜能测评</span>
+            </div>
+            <div class="hidden md:flex space-x-6">
+                <button id="btn-science" class="text-gray-600 hover:text-primary transition-colors">科学依据</button>
+                <button id="btn-privacy" class="text-gray-600 hover:text-primary transition-colors">隐私保护</button>
+                <button id="btn-process" class="text-gray-600 hover:text-primary transition-colors">测评流程</button>
+            </div>
+            <div class="md:hidden">
+                <button id="btn-mobile-menu" class="text-gray-600 hover:text-primary">
+                    <i class="fa fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+        <!-- 移动端菜单 -->
+        <div id="mobile-menu" class="md:hidden hidden bg-white border-t border-gray-200 animate-fade-in">
+            <div class="container mx-auto px-4 py-2 flex flex-col space-y-3">
+                <button id="btn-mobile-science" class="text-gray-600 hover:text-primary transition-colors py-2">科学依据</button>
+                <button id="btn-mobile-privacy" class="text-gray-600 hover:text-primary transition-colors py-2">隐私保护</button>
+                <button id="btn-mobile-process" class="text-gray-600 hover:text-primary transition-colors py-2">测评流程</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- 页面容器 -->
+        <div id="page-container">
+            <!-- 欢迎页面 -->
+            <section id="welcome-page" class="animate-fade-in">
+                <div class="max-w-4xl mx-auto">
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                        <div class="relative h-64 bg-gradient-to-r from-primary to-secondary">
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <h1 class="text-4xl md:text-5xl font-bold text-white text-shadow">发现你的天赋潜能</h1>
+                            </div>
+                        </div>
+                        <div class="p-8">
+                            <h2 class="text-[calc(1.5rem*0.8)] font-bold bg-gradient-to-r from-secondary to-[#2A5C36] bg-clip-text text-transparent mb-4 text-center">关于 EYT 个人天赋潜能测评</h2>
+                            <p class="text-[calc(1rem*0.8)] text-gray-600 mb-6 text-justify leading-relaxed mx-auto">
+                                    EYT 个人天赋潜能测评基于哈佛大学霍华德·加德纳教授的多元智能理论，结合现代心理学研究成果，
+                                    通过科学严谨的测试方法，从10个维度全面评估你的天赋潜能，帮助你发现自身优势，规划职业发展方向。
+                                </p>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                                <div class="bg-blue-50 p-6 rounded-lg card-hover">
+                                    <div class="text-primary text-3xl mb-3">
+                                        <i class="fa fa-flask"></i>
+                                    </div>
+                                    <h3 class="text-lg font-semibold mb-2">科学依据</h3>
+                                    <p class="text-gray-600 text-sm">基于多元智能理论和大量实证研究，确保测试结果的科学性和准确性。</p>
+                                </div>
+                                <div class="bg-green-50 p-6 rounded-lg card-hover">
+                                    <div class="text-secondary text-3xl mb-3">
+                                        <i class="fa fa-line-chart"></i>
+                                    </div>
+                                    <h3 class="text-lg font-semibold mb-2">全面评估</h3>
+                                    <p class="text-gray-600 text-sm">从10个维度全面评估你的天赋潜能，提供全方位的自我认知。</p>
+                                </div>
+                                <div class="bg-amber-50 p-6 rounded-lg card-hover">
+                                    <div class="text-accent text-3xl mb-3">
+                                        <i class="fa fa-lightbulb-o"></i>
+                                    </div>
+                                    <h3 class="text-lg font-semibold mb-2">实用建议</h3>
+                                    <p class="text-gray-600 text-sm">根据测试结果提供个性化的发展建议，帮助你最大化发挥优势。</p>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-8">
+                                <h3 class="text-xl font-semibold mb-4">测试维度</h3>
+                                <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+                                    <div class="flex items-center">
+                                        <span class="w-3 h-3 rounded-full bg-blue-500 mr-2"></span>
+                                        <span>A. 语言智能</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="w-3 h-3 rounded-full bg-green-500 mr-2"></span>
+                                        <span>B. 逻辑-数学智能</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="w-3 h-3 rounded-full bg-yellow-500 mr-2"></span>
+                                        <span>C. 空间智能</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="w-3 h-3 rounded-full bg-red-500 mr-2"></span>
+                                        <span>D. 内省智能</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="w-3 h-3 rounded-full bg-purple-500 mr-2"></span>
+                                        <span>E. 人际智能</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="w-3 h-3 rounded-full bg-pink-500 mr-2"></span>
+                                        <span>F. 身体-动觉智能</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="w-3 h-3 rounded-full bg-indigo-500 mr-2"></span>
+                                        <span>G. 音乐智能</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="w-3 h-3 rounded-full bg-teal-500 mr-2"></span>
+                                        <span>H. 自然智能</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="w-3 h-3 rounded-full bg-orange-500 mr-2"></span>
+                                        <span>I. 创造智能</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="w-3 h-3 rounded-full bg-gray-500 mr-2"></span>
+                                        <span>J. 美学智能</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex flex-col md:flex-row md:items-center justify-between">
+                                <div class="mb-4 md:mb-0">
+                                    <p class="text-[calc(1rem*0.8)] text-gray-600 text-left">测试包含 <span class="font-bold text-primary">53</span> 道题目，预计用时 <span class="font-bold text-primary">15-20</span> 分钟</p>
+                                </div>
+                                <div class="flex flex-col sm:flex-row gap-4">
+                                    <button id="btn-start-test" class="btn-primary">
+                                        <i class="fa fa-play-circle mr-2"></i>开始测试
+                                    </button>
+                                    <button id="btn-view-sample" class="btn-outline">
+                                        <i class="fa fa-bar-chart mr-2"></i>查看样本报告
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8 text-center text-gray-500 text-sm">
+                        <p>© 2025 SCL量子心理研究院 版权所有</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 兑换码验证页面 -->
+            <section id="code-verification-page" class="hidden animate-fade-in">
+                <div class="max-w-md mx-auto">
+                    <div class="bg-white rounded-xl shadow-lg p-8">
+                        <div class="text-center mb-8">
+                            <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/409d05c776a847b99080490cf538927b~tplv-a9rns2rl98-image.image?rcl=20251110032542064C7DE5121761212BB8&rk3s=8e244e95&rrcfp=f06b921b&x-expires=1765308359&x-signature=YZrduL%2B9Hj7F6FsWvjSXdHB69no%3D" alt="EYT 个人天赋潜能测评" class="h-20 mx-auto mb-4">
+                            <h2 class="text-2xl font-bold text-gray-800">兑换码验证</h2>
+                            <p class="text-gray-600 mt-2">请输入您的兑换码以开始测试</p>
+                        </div>
+                        
+                        <form id="code-form" class="space-y-6">
+                            <div>
+                                <label for="code-input" class="block text-sm font-medium text-gray-700 mb-1">兑换码</label>
+                                <div class="flex">
+                                    <input type="text" id="code-input" name="code" class="input-primary flex-grow" placeholder="请输入兑换码" required>
+                                </div>
+                                <p id="code-error" class="mt-1 text-sm text-red-600 hidden">兑换码无效，请重新输入</p>
+                            </div>
+                            
+                            <div class="pt-4">
+                                <button type="submit" class="btn-primary w-full">
+                                    <i class="fa fa-check-circle mr-2"></i>验证并开始测试
+                                </button>
+                            </div>
+                            
+                            <div class="text-center mt-4">
+                                <p class="text-gray-600 text-sm">没有兑换码？</p>
+                                <a href="https://www.xiaohongshu.com/user/profile/63888e240000000024009f51?xsec_token=YBE7gVpDYMhmFIi-aaHW_qvA3YDSKABj-xfGMrixgYZtc%3D&xsec_source=app_share&xhsshare=CopyLink&shareRedId=ODk6ODtKNj02NzUyOTgwNjg3OTc9Szs6&apptime=1761970220&share_id=39cb8bcf722d42bc9ac2a8757d7e566c&share_channel=copy_link" target="_blank" class="text-primary text-sm font-medium hover:underline">
+                                    <i class="fa fa-external-link mr-1"></i>点击获取兑换码
+                                </a>
+                            </div>
+                        </form>
+                        
+                        <div class="mt-6 text-center">
+                            <button id="btn-back-welcome" class="text-gray-600 hover:text-primary text-sm">
+                                <i class="fa fa-arrow-left mr-1"></i>返回首页
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 答题页面 -->
+            <section id="quiz-page" class="hidden animate-fade-in">
+                <div class="max-w-4xl mx-auto">
+                    <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl font-bold text-gray-800">天赋测评问卷</h2>
+                            <div class="text-gray-600">
+                                <span id="current-question">1</span>/53
+                            </div>
+                        </div>
+                        
+                        <div class="progress-bar mb-6">
+                            <div id="progress-value" class="progress-value" style="width: 0%"></div>
+                        </div>
+                        
+                        <div id="question-container" class="mb-8">
+                            <!-- 题目内容将通过JavaScript动态加载 -->
+                        </div>
+                        
+                        <div class="flex justify-between">
+                            <button id="btn-prev-question" class="btn-outline opacity-50 cursor-not-allowed" disabled>
+                                <i class="fa fa-arrow-left mr-2"></i>上一题
+                            </button>
+                            <button id="btn-next-question" class="btn-primary">
+                                下一题<i class="fa fa-arrow-right ml-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-blue-50 rounded-lg p-4 text-sm text-blue-700">
+                        <p><i class="fa fa-info-circle mr-2"></i>测试说明：请根据您的真实情况和第一反应选择最符合您的选项。测试结果仅供个人参考，不具有任何歧视性或评判性意义。</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 结果分析页面 -->
+            <section id="result-page" class="hidden animate-fade-in">
+                <div class="max-w-5xl mx-auto">
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                        <div class="relative h-48 bg-gradient-to-r from-primary to-secondary">
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <h1 class="text-3xl md:text-4xl font-bold text-white text-shadow">天赋测评结果</h1>
+                            </div>
+                        </div>
+                        
+                        <div class="p-6 md:p-8">
+                            <div class="flex flex-col md:flex-row md:items-center justify-between mb-8">
+                                <div>
+                                    <h2 class="text-2xl font-bold text-gray-800">您的天赋分布</h2>
+                                    <p class="text-gray-600 mt-1">基于您的回答，我们分析了您在10个维度的天赋表现</p>
+                                </div>
+                                <div class="mt-4 md:mt-0">
+                                    <button id="btn-save-result" class="btn-outline">
+                                        <i class="fa fa-download mr-2"></i>保存结果
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- 图表展示区域 -->
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
+                                <div class="bg-white p-4 rounded-lg shadow">
+                                    <h3 class="text-lg font-semibold mb-4 text-center">天赋雷达图</h3>
+                                    <div class="h-80">
+                                        <canvas id="radar-chart"></canvas>
+                                    </div>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg shadow">
+                                    <h3 class="text-lg font-semibold mb-4 text-center">天赋柱状图</h3>
+                                    <div class="h-80">
+                                        <canvas id="bar-chart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 结果解读区域 -->
+                            <div class="mb-8">
+                                <h3 class="text-xl font-semibold mb-4">天赋解读</h3>
+                                
+                                <div class="mb-4">
+                                    <div class="flex flex-col md:flex-row border-b border-gray-200">
+                                        <button class="result-tab tab-active py-3 font-medium text-center flex-1" data-tab="summary">
+                                            总体 summary
+                                        </button>
+                                        <button class="result-tab py-3 font-medium text-gray-600 text-center flex-1 bg-green-50 hover:bg-green-100 transition-colors" data-tab="details">
+                                            详细分析
+                                        </button>
+                                        <button class="result-tab py-3 font-medium text-gray-600 text-center flex-1 bg-blue-50 hover:bg-blue-100 transition-colors" data-tab="career">
+                                            职业建议
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div id="summary-tab" class="tab-content">
+                                    <div class="bg-blue-50 p-6 rounded-lg mb-6">
+                                        <h4 class="text-lg font-semibold mb-3">总体评价</h4>
+                                        <p id="overall-summary" class="text-gray-700">
+                                            <!-- 总体评价将通过JavaScript动态加载 -->
+                                        </p>
+                                    </div>
+                                    
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div class="bg-green-50 p-4 rounded-lg">
+                                            <h4 class="font-semibold text-green-700 mb-2">
+                                                <i class="fa fa-star mr-2"></i>优势天赋
+                                            </h4>
+                                            <ul id="strengths-list" class="list-disc list-inside text-gray-700">
+                                                <!-- 优势天赋将通过JavaScript动态加载 -->
+                                            </ul>
+                                        </div>
+                                        <div class="bg-amber-50 p-4 rounded-lg">
+                                            <h4 class="font-semibold text-amber-700 mb-2">
+                                                <i class="fa fa-lightbulb-o mr-2"></i>发展建议
+                                            </h4>
+                                            <ul id="suggestions-list" class="list-disc list-inside text-gray-700">
+                                                <!-- 发展建议将通过JavaScript动态加载 -->
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div id="details-tab" class="tab-content hidden">
+                                    <div id="details-content" class="space-y-6">
+                                        <div class="bg-white p-6 rounded-lg shadow">
+                                            <h4 class="text-lg font-semibold mb-4 text-secondary">深度分析报告</h4>
+                                            <p class="text-gray-700 mb-4">根据您的测评结果，我们从以下几个维度进行了深入分析：</p>
+                                            <div class="space-y-4">
+                                                <div class="border-l-4 border-blue-500 pl-4 py-2">
+                                                    <h5 class="font-semibold text-blue-800">语言智能深度解析</h5>
+                                                    <p class="text-sm text-gray-600">您在语言表达、阅读理解和文字创作方面的表现反映了您的语言思维模式。这不仅影响您的沟通能力，还关系到您的学习方式和信息处理效率。</p>
+                                                </div>
+                                                <div class="border-l-4 border-green-500 pl-4 py-2">
+                                                    <h5 class="font-semibold text-green-800">逻辑-数学智能分析</h5>
+                                                    <p class="text-sm text-gray-600">您的逻辑推理、问题解决和数据分析能力揭示了您的思维严谨程度和抽象思考能力。这影响您在工作和生活中的决策方式。</p>
+                                                </div>
+                                                <div class="border-l-4 border-purple-500 pl-4 py-2">
+                                                    <h5 class="font-semibold text-purple-800">人际智能评估</h5>
+                                                    <p class="text-sm text-gray-600">您的人际交往、情绪识别和团队协作能力反映了您的社会适应性和领导力潜力。这对职业发展和个人关系建立至关重要。</p>
+                                                </div>
+                                                <div class="border-l-4 border-red-500 pl-4 py-2">
+                                                    <h5 class="font-semibold text-red-800">内省智能剖析</h5>
+                                                    <p class="text-sm text-gray-600">您的自我认知、情绪管理和价值观清晰度展示了您的心理成熟度和自我发展能力。这影响您的职业满意度和生活幸福感。</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div id="career-tab" class="tab-content hidden">
+                                    <div class="bg-white p-6 rounded-lg shadow">
+                                        <h4 class="text-lg font-semibold mb-4 text-primary">适合的职业方向</h4>
+                                        <div id="career-suggestions" class="space-y-6">
+                                            <div class="border border-blue-100 rounded-lg p-4 bg-blue-50">
+                                                <h5 class="font-semibold text-blue-800 mb-2">创意与艺术领域</h5>
+                                                <p class="text-gray-700 mb-3 text-sm">如果您在空间智能、音乐智能或创造智能方面表现突出，以下职业可能非常适合您：</p>
+                                                <ul class="list-disc list-inside text-gray-600 text-sm space-y-1">
+                                                    <li>平面设计师、插画师、艺术指导</li>
+                                                    <li>产品设计、UI/UX设计、交互设计</li>
+                                                    <li>音乐创作、表演艺术、创意写作</li>
+                                                    <li>建筑设计、室内设计、景观设计</li>
+                                                </ul>
+                                            </div>
+                                            <div class="border border-green-100 rounded-lg p-4 bg-green-50">
+                                                <h5 class="font-semibold text-green-800 mb-2">分析与技术领域</h5>
+                                                <p class="text-gray-700 mb-3 text-sm">如果您在逻辑-数学智能、内省智能方面表现出色，这些职业方向值得考虑：</p>
+                                                <ul class="list-disc list-inside text-gray-600 text-sm space-y-1">
+                                                    <li>数据科学、机器学习、人工智能</li>
+                                                    <li>软件工程师、系统架构师、网络安全</li>
+                                                    <li>金融分析、投资顾问、财务规划</li>
+                                                    <li>科学研究、工程设计、技术创新</li>
+                                                </ul>
+                                            </div>
+                                            <div class="border border-purple-100 rounded-lg p-4 bg-purple-50">
+                                                <h5 class="font-semibold text-purple-800 mb-2">人际与管理领域</h5>
+                                                <p class="text-gray-700 mb-3 text-sm">如果您在人际智能、语言智能方面得分较高，以下职业可能会让您充分发挥优势：</p>
+                                                <ul class="list-disc list-inside text-gray-600 text-sm space-y-1">
+                                                    <li>人力资源管理、组织发展、人才招聘</li>
+                                                    <li>市场营销、品牌管理、客户关系</li>
+                                                    <li>教育教学、培训师、咨询顾问</li>
+                                                    <li>公共关系、社会工作、社区发展</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex justify-between">
+                                <button id="btn-retake-test" class="btn-outline">
+                                    <i class="fa fa-refresh mr-2"></i>重新测试
+                                </button>
+                                <button id="btn-share-result" class="btn-primary">
+                                    <i class="fa fa-share-alt mr-2"></i>分享结果
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8 text-center text-gray-500 text-sm">
+                        <p>© 2025 SCL量子心理研究院 版权所有</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 分享页面 -->
+            <section id="share-page" class="hidden animate-fade-in">
+                <div class="max-w-md mx-auto">
+                    <div class="bg-white rounded-xl shadow-lg p-8">
+                        <div class="text-center mb-6">
+                            <h2 class="text-2xl font-bold text-gray-800">分享您的天赋报告</h2>
+                            <p class="text-gray-600 mt-2">与朋友分享您的天赋优势</p>
+                        </div>
+                        
+                        <div class="space-y-4 mb-8">
+                            <button class="btn-primary w-full flex items-center justify-center">
+                                <i class="fa fa-weixin text-xl mr-3"></i>
+                                <span>分享到微信</span>
+                            </button>
+                            <button class="btn-outline w-full flex items-center justify-center">
+                                <i class="fa fa-weibo text-xl mr-3"></i>
+                                <span>分享到微博</span>
+                            </button>
+                            <button class="btn-outline w-full flex items-center justify-center">
+                                <i class="fa fa-link text-xl mr-3"></i>
+                                <span>复制链接</span>
+                            </button>
+                        </div>
+                        
+                        <div class="bg-gray-50 p-4 rounded-lg mb-6">
+                            <h3 class="font-medium text-gray-800 mb-2">您的天赋亮点</h3>
+                            <ul id="share-highlights" class="text-gray-600 space-y-2">
+                                <!-- 分享亮点将通过JavaScript动态加载 -->
+                            </ul>
+                        </div>
+                        
+                        <div class="flex justify-between">
+                            <button id="btn-back-result" class="btn-outline">
+                                <i class="fa fa-arrow-left mr-2"></i>返回结果
+                            </button>
+                            <button id="btn-download-image" class="btn-primary">
+                                <i class="fa fa-download mr-2"></i>下载报告
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- 模态框 -->
+    <div id="modal-container" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <!-- 模态框内容将通过JavaScript动态加载 -->
+    </div>
+
+    <script>
+        // 全局变量
+        const validCodes = ["5Jq3Rt7aZ", "W9s2Fp6Dk", "8xV4Nc9Hb", "Eq75Gz2Lr", "3bT6Ws8Qm", "Yk48Dv3E7", "9nP2Rf5Zs", "C7h5Jw3Qt", "Xp63Bd8V9", "4zF7Sk2Hq"];
+        let currentPage = 'welcome-page';
+        let currentQuestion = 0;
+        let userAnswers = [];
+        let testResults = {};
+        
+        // 测试题目数据
+        const questions = [
+            // A. 语言智能
+            {
+                id: 1,
+                dimension: 'A',
+                dimensionName: '语言智能',
+                question: '我喜欢阅读各种类型的书籍、文章或杂志。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            {
+                id: 2,
+                dimension: 'A',
+                dimensionName: '语言智能',
+                question: '我善于用语言表达自己的想法和感受。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            {
+                id: 3,
+                dimension: 'A',
+                dimensionName: '语言智能',
+                question: '我喜欢学习新的词汇和表达方式。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            {
+                id: 4,
+                dimension: 'A',
+                dimensionName: '语言智能',
+                question: '我擅长讲故事或写文章。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            {
+                id: 5,
+                dimension: 'A',
+                dimensionName: '语言智能',
+                question: '我喜欢玩文字游戏，如填字游戏、谜语等。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            
+            // B. 逻辑-数学智能
+            {
+                id: 6,
+                dimension: 'B',
+                dimensionName: '逻辑-数学智能',
+                question: '我喜欢解决数学问题或逻辑谜题。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            {
+                id: 7,
+                dimension: 'B',
+                dimensionName: '逻辑-数学智能',
+                question: '我善于发现事物之间的规律和联系。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            {
+                id: 8,
+                dimension: 'B',
+                dimensionName: '逻辑-数学智能',
+                question: '我喜欢进行推理和分析。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            {
+                id: 9,
+                dimension: 'B',
+                dimensionName: '逻辑-数学智能',
+                question: '我对数字和数据比较敏感。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            {
+                id: 10,
+                dimension: 'B',
+                dimensionName: '逻辑-数学智能',
+                question: '我喜欢制定计划和策略。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            
+            // C. 空间智能
+            {
+                id: 11,
+                dimension: 'C',
+                dimensionName: '空间智能',
+                question: '我善于阅读地图、图表或示意图。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            {
+                id: 12,
+                dimension: 'C',
+                dimensionName: '空间智能',
+                question: '我喜欢绘画、雕塑或其他视觉艺术形式。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            {
+                id: 13,
+                dimension: 'C',
+                dimensionName: '空间智能',
+                question: '我善于想象物体在三维空间中的样子。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            {
+                id: 14,
+                dimension: 'C',
+                dimensionName: '空间智能',
+                question: '我喜欢玩拼图或迷宫游戏。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            {
+                id: 15,
+                dimension: 'C',
+                dimensionName: '空间智能',
+                question: '我对颜色、形状和设计比较敏感。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            
+            // D. 内省智能
+            {
+                id: 16,
+                dimension: 'D',
+                dimensionName: '内省智能',
+                question: '我经常反思自己的想法、感受和行为。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            {
+                id: 17,
+                dimension: 'D',
+                dimensionName: '内省智能',
+                question: '我清楚自己的优点和缺点。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            {
+                id: 18,
+                dimension: 'D',
+                dimensionName: '内省智能',
+                question: '我喜欢独处，享受自我思考的时间。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            {
+                id: 19,
+                dimension: 'D',
+                dimensionName: '内省智能',
+                question: '我有明确的人生目标和价值观。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            {
+                id: 20,
+                dimension: 'D',
+                dimensionName: '内省智能',
+                question: '我善于自我调节情绪和行为。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            
+            // E. 人际智能
+            {
+                id: 21,
+                dimension: 'E',
+                dimensionName: '人际智能',
+                question: '我善于理解他人的想法和感受。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            {
+                id: 22,
+                dimension: 'E',
+                dimensionName: '人际智能',
+                question: '我喜欢与人交流和合作。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            {
+                id: 23,
+                dimension: 'E',
+                dimensionName: '人际智能',
+                question: '我善于调解矛盾和解决冲突。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            {
+                id: 24,
+                dimension: 'E',
+                dimensionName: '人际智能',
+                question: '我在团队中能够很好地发挥作用。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            {
+                id: 25,
+                dimension: 'E',
+                dimensionName: '人际智能',
+                question: '我善于影响和说服他人。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            
+            // F. 身体-动觉智能
+            {
+                id: 26,
+                dimension: 'F',
+                dimensionName: '身体-动觉智能',
+                question: '我喜欢运动或其他身体活动。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            {
+                id: 27,
+                dimension: 'F',
+                dimensionName: '身体-动觉智能',
+                question: '我善于用身体表达自己的想法和感受。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            {
+                id: 28,
+                dimension: 'F',
+                dimensionName: '身体-动觉智能',
+                question: '我学习新的身体技能比较快。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            {
+                id: 29,
+                dimension: 'F',
+                dimensionName: '身体-动觉智能',
+                question: '我喜欢做手工或需要动手的活动。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            {
+                id: 30,
+                dimension: 'F',
+                dimensionName: '身体-动觉智能',
+                question: '我对身体的协调性和平衡感比较敏感。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            
+            // G. 音乐智能
+            {
+                id: 31,
+                dimension: 'G',
+                dimensionName: '音乐智能',
+                question: '我喜欢听各种类型的音乐。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            {
+                id: 32,
+                dimension: 'G',
+                dimensionName: '音乐智能',
+                question: '我对音高、节奏和旋律比较敏感。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            {
+                id: 33,
+                dimension: 'G',
+                dimensionName: '音乐智能',
+                question: '我喜欢唱歌或演奏乐器。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            {
+                id: 34,
+                dimension: 'G',
+                dimensionName: '音乐智能',
+                question: '我能够辨别不同的音乐风格和乐器。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            {
+                id: 35,
+                dimension: 'G',
+                dimensionName: '音乐智能',
+                question: '音乐对我的情绪有很大影响。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            
+            // H. 自然智能
+            {
+                id: 36,
+                dimension: 'H',
+                dimensionName: '自然智能',
+                question: '我喜欢观察和研究自然界的事物。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            {
+                id: 37,
+                dimension: 'H',
+                dimensionName: '自然智能',
+                question: '我善于辨别不同的植物、动物或自然现象。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            {
+                id: 38,
+                dimension: 'H',
+                dimensionName: '自然智能',
+                question: '我喜欢户外活动，如徒步、露营等。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            {
+                id: 39,
+                dimension: 'H',
+                dimensionName: '自然智能',
+                question: '我关心环境保护和生态平衡。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            {
+                id: 40,
+                dimension: 'H',
+                dimensionName: '自然智能',
+                question: '我善于发现自然界中的规律和模式。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            
+            // I. 创造智能
+            {
+                id: 41,
+                dimension: 'I',
+                dimensionName: '创造智能',
+                question: '我喜欢提出新的想法和解决方案。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            {
+                id: 42,
+                dimension: 'I',
+                dimensionName: '创造智能',
+                question: '我善于从不同的角度思考问题。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            {
+                id: 43,
+                dimension: 'I',
+                dimensionName: '创造智能',
+                question: '我喜欢尝试新的事物和方法。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            {
+                id: 44,
+                dimension: 'I',
+                dimensionName: '创造智能',
+                question: '我善于将不同的想法和概念结合起来。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            {
+                id: 45,
+                dimension: 'I',
+                dimensionName: '创造智能',
+                question: '我对创新和变革持开放态度。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            
+            // J. 美学智能
+            {
+                id: 46,
+                dimension: 'J',
+                dimensionName: '美学智能',
+                question: '我对美的事物比较敏感。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            {
+                id: 47,
+                dimension: 'J',
+                dimensionName: '美学智能',
+                question: '我喜欢欣赏艺术、建筑或其他美学作品。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            {
+                id: 48,
+                dimension: 'J',
+                dimensionName: '美学智能',
+                question: '我善于发现事物中的和谐与平衡。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            {
+                id: 49,
+                dimension: 'J',
+                dimensionName: '美学智能',
+                question: '我喜欢设计和装饰环境。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            {
+                id: 50,
+                dimension: 'J',
+                dimensionName: '美学智能',
+                question: '我对色彩、形状和纹理的搭配比较敏感。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            
+            // 额外题目，确保总题数为53
+            {
+                id: 51,
+                dimension: 'A',
+                dimensionName: '语言智能',
+                question: '我喜欢学习外语或方言。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            {
+                id: 52,
+                dimension: 'B',
+                dimensionName: '逻辑-数学智能',
+                question: '我喜欢进行科学实验或研究。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            },
+            {
+                id: 53,
+                dimension: 'E',
+                dimensionName: '人际智能',
+                question: '我善于组织和协调团队活动。',
+                options: ['非常不符合', '不太符合', '一般', '比较符合', '非常符合']
+            }
+        ];
+        
+        // 天赋维度颜色映射
+        const dimensionColors = {
+            'A': 'rgba(59, 130, 246, 0.7)',   // 蓝色
+            'B': 'rgba(16, 185, 129, 0.7)',   // 绿色
+            'C': 'rgba(245, 158, 11, 0.7)',   // 黄色
+            'D': 'rgba(239, 68, 68, 0.7)',    // 红色
+            'E': 'rgba(139, 92, 246, 0.7)',   // 紫色
+            'F': 'rgba(236, 72, 153, 0.7)',   // 粉色
+            'G': 'rgba(99, 102, 241, 0.7)',   // 靛蓝色
+            'H': 'rgba(20, 184, 166, 0.7)',   // 青色
+            'I': 'rgba(249, 115, 22, 0.7)',   // 橙色
+            'J': 'rgba(107, 114, 128, 0.7)'   // 灰色
+        };
+        
+        // 天赋维度详细解读
+        const dimensionInterpretations = {
+            'A': {
+                name: '语言智能',
+                description: '语言智能是指有效地运用口头语言或书面文字表达自己的思想并理解他人，灵活掌握语音、语义、语法，具备用言语思维、用言语表达和欣赏语言深层内涵的能力结合在一起并运用自如的能力。',
+                high: '您在语言智能方面表现出色，善于表达和沟通，可能在写作、演讲、翻译等领域有优势。',
+                medium: '您在语言智能方面表现良好，能够有效地表达自己的想法，适合从事需要良好沟通能力的工作。',
+                low: '您在语言智能方面可能需要更多的发展，建议多阅读、多写作，提高自己的语言表达能力。'
+            },
+            'B': {
+                name: '逻辑-数学智能',
+                description: '逻辑-数学智能是指有效地计算、测量、推理、归纳、分类，并进行复杂数学运算的能力。这项智能包括对逻辑的方式和关系、陈述和主张、功能及其他相关的抽象概念的敏感性。',
+                high: '您在逻辑-数学智能方面表现出色，善于分析和解决问题，可能在科学、数学、编程等领域有优势。',
+                medium: '您在逻辑-数学智能方面表现良好，能够进行理性思考和分析，适合从事需要逻辑思维的工作。',
+                low: '您在逻辑-数学智能方面可能需要更多的发展，建议多进行逻辑思考和问题解决练习。'
+            },
+            'C': {
+                name: '空间智能',
+                description: '空间智能是指准确感知视觉空间及周围一切事物，并且能把所感觉到的形象以图画的形式表现出来的能力。这项智能包括对色彩、线条、形状、形式、空间关系很敏感。',
+                high: '您在空间智能方面表现出色，善于视觉思考和空间想象，可能在设计、建筑、艺术等领域有优势。',
+                medium: '您在空间智能方面表现良好，能够进行空间思考和视觉化，适合从事需要空间感知的工作。',
+                low: '您在空间智能方面可能需要更多的发展，建议多进行视觉思考和空间想象练习。'
+            },
+            'D': {
+                name: '内省智能',
+                description: '内省智能是指自我认识和善于自知之明并据此做出适当行为的能力。这项智能能够认识自己的长处和短处，意识到自己的内在爱好、情绪、意向、脾气和自尊，喜欢独立思考。',
+                high: '您在内省智能方面表现出色，善于自我反思和自我认知，可能在哲学、心理学、写作等领域有优势。',
+                medium: '您在内省智能方面表现良好，能够进行自我反思和自我管理，适合从事需要自我认知的工作。',
+                low: '您在内省智能方面可能需要更多的发展，建议多进行自我反思和自我探索。'
+            },
+            'E': {
+                name: '人际智能',
+                description: '人际智能是指能很好地理解别人和与人交往的能力。这项智能善于察觉他人的情绪、情感，体会他人的感觉感受，辨别不同人际关系的暗示以及对这些暗示做出适当反应的能力。',
+                high: '您在人际智能方面表现出色，善于理解和沟通，可能在教育、管理、咨询等领域有优势。',
+                medium: '您在人际智能方面表现良好，能够与他人有效合作，适合从事需要良好人际关系的工作。',
+                low: '您在人际智能方面可能需要更多的发展，建议多与人交往和沟通，提高自己的人际交往能力。'
+            },
+            'F': {
+                name: '身体-动觉智能',
+                description: '身体-动觉智能是指善于运用整个身体来表达思想和情感、灵巧地运用双手制作或操作物体的能力。这项智能包括特殊的身体技巧，如平衡、协调、敏捷、力量、弹性和速度以及由触觉所引起的能力。',
+                high: '您在身体-动觉智能方面表现出色，善于身体表达和操作，可能在运动、表演、手工艺等领域有优势。',
+                medium: '您在身体-动觉智能方面表现良好，能够进行身体表达和操作，适合从事需要身体协调的工作。',
+                low: '您在身体-动觉智能方面可能需要更多的发展，建议多进行身体活动和手工操作练习。'
+            },
+            'G': {
+                name: '音乐智能',
+                description: '音乐智能是指人能够敏锐地感知音调、旋律、节奏、音色等的能力。这项智能对节奏、音调、旋律或音色的敏感性强，与生俱来就拥有音乐的天赋，具有较高的表演、创作及思考音乐的能力。',
+                high: '您在音乐智能方面表现出色，善于理解和创作音乐，可能在音乐、表演、音频设计等领域有优势。',
+                medium: '您在音乐智能方面表现良好，能够理解和欣赏音乐，适合从事需要音乐感知的工作。',
+                low: '您在音乐智能方面可能需要更多的发展，建议多欣赏和创作音乐，提高自己的音乐感知能力。'
+            },
+            'H': {
+                name: '自然智能',
+                description: '自然智能是指善于观察自然界中的各种事物，对物体进行辨论和分类的能力。这项智能有着强烈的好奇心和求知欲，有着敏锐的观察能力，能了解各种事物的细微差别。',
+                high: '您在自然智能方面表现出色，善于观察和理解自然，可能在科学、环保、农业等领域有优势。',
+                medium: '您在自然智能方面表现良好，能够观察和理解自然，适合从事需要自然观察的工作。',
+                low: '您在自然智能方面可能需要更多的发展，建议多观察和了解自然，提高自己的自然观察能力。'
+            },
+            'I': {
+                name: '创造智能',
+                description: '创造智能是指产生新思想、发现和创造新事物的能力。这项智能包括对现有事物的重新组合、改进和创新，以及提出新的想法和解决方案。',
+                high: '您在创造智能方面表现出色，善于创新和创造，可能在设计、发明、艺术等领域有优势。',
+                medium: '您在创造智能方面表现良好，能够进行创新思考，适合从事需要创造性思维的工作。',
+                low: '您在创造智能方面可能需要更多的发展，建议多进行创新思考和创造性活动。'
+            },
+            'J': {
+                name: '美学智能',
+                description: '美学智能是指对美的感知、判断和创造能力。这项智能包括对色彩、形式、平衡、和谐等美的元素的敏感性，以及创造和欣赏美的能力。',
+                high: '您在美学智能方面表现出色，善于感知和创造美，可能在设计、艺术、时尚等领域有优势。',
+                medium: '您在美学智能方面表现良好，能够感知和欣赏美，适合从事需要美学感知的工作。',
+                low: '您在美学智能方面可能需要更多的发展，建议多欣赏和创造美的事物，提高自己的美学感知能力。'
+            }
+        };
+        
+        // 职业建议
+        const careerSuggestions = {
+            'A': ['作家', '编辑', '记者', '翻译', '教师', '演讲家', '律师'],
+            'B': ['数学家', '科学家', '工程师', '程序员', '分析师', '统计学家', '逻辑学家'],
+            'C': ['建筑师', '设计师', '艺术家', '摄影师', '导航员', '城市规划师', '游戏设计师'],
+            'D': ['心理学家', '哲学家', '作家', '思想家', '顾问', '神职人员', '自我成长教练'],
+            'E': ['教师', '管理者', '顾问', '社工', '销售人员', '政治家', '公关专家'],
+            'F': ['运动员', '舞蹈家', '演员', '手工艺人', '外科医生', '机械师', '厨师'],
+            'G': ['音乐家', '作曲家', '歌手', '音乐教师', '音频工程师', '音乐治疗师', 'DJ'],
+            'H': ['科学家', '环保主义者', '农民', '兽医', '园艺师', '自然摄影师', '生态学家'],
+            'I': ['设计师', '发明家', '艺术家', '作家', '企业家', '广告创意', '科研人员'],
+            'J': ['设计师', '艺术家', '时尚顾问', '室内设计师', '摄影师', '艺术评论家', '建筑师']
+        };
+        
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化页面
+            initPage();
+            
+            // 绑定事件
+            bindEvents();
+        });
+        
+        // 初始化页面
+        function initPage() {
+            // 初始化用户答案数组
+            userAnswers = new Array(questions.length).fill(null);
+            
+            // 显示欢迎页面
+            showPage('welcome-page');
+        }
+        
+        // 绑定事件
+        function bindEvents() {
+            // 移动端菜单
+            document.getElementById('btn-mobile-menu').addEventListener('click', function() {
+                const mobileMenu = document.getElementById('mobile-menu');
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            // 导航按钮
+            document.getElementById('btn-science').addEventListener('click', showScienceModal);
+            document.getElementById('btn-mobile-science').addEventListener('click', showScienceModal);
+            document.getElementById('btn-privacy').addEventListener('click', showPrivacyModal);
+            document.getElementById('btn-mobile-privacy').addEventListener('click', showPrivacyModal);
+            document.getElementById('btn-process').addEventListener('click', showProcessModal);
+            document.getElementById('btn-mobile-process').addEventListener('click', showProcessModal);
+            
+            // 开始测试按钮
+            document.getElementById('btn-start-test').addEventListener('click', function() {
+                showPage('code-verification-page');
+            });
+            
+            // 查看样本报告按钮
+            document.getElementById('btn-view-sample').addEventListener('click', showSampleReport);
+            
+            // 返回首页按钮
+            document.getElementById('btn-back-welcome').addEventListener('click', function() {
+                showPage('welcome-page');
+            });
+            
+            // 兑换码表单提交
+            document.getElementById('code-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const codeInput = document.getElementById('code-input');
+                const codeError = document.getElementById('code-error');
+                
+                if (validCodes.includes(codeInput.value.trim())) {
+                    // 兑换码有效，开始测试
+                    codeError.classList.add('hidden');
+                    startTest();
+                } else {
+                    // 兑换码无效，显示错误
+                    codeError.classList.remove('hidden');
+                }
+            });
+            
+            // 上一题按钮
+            document.getElementById('btn-prev-question').addEventListener('click', function() {
+                if (currentQuestion > 0) {
+                    currentQuestion--;
+                    loadQuestion();
+                }
+            });
+            
+            // 下一题按钮
+            document.getElementById('btn-next-question').addEventListener('click', function() {
+                // 检查是否选择了答案
+                const selectedOption = document.querySelector('input[name="answer"]:checked');
+                if (!selectedOption) {
+                    alert('请选择一个选项');
+                    return;
+                }
+                
+                // 保存答案
+                userAnswers[currentQuestion] = parseInt(selectedOption.value);
+                
+                if (currentQuestion < questions.length - 1) {
+                    currentQuestion++;
+                    loadQuestion();
+                } else {
+                    // 测试完成，计算结果
+                    calculateResults();
+                    showPage('result-page');
+                    renderCharts();
+                    renderResultInterpretation();
+                }
+            });
+            
+            // 结果标签切换
+            document.querySelectorAll('.result-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    
+                    // 更新标签样式
+                    document.querySelectorAll('.result-tab').forEach(t => {
+                        t.classList.remove('tab-active');
+                        t.classList.add('text-gray-600');
+                    });
+                    this.classList.add('tab-active');
+                    this.classList.remove('text-gray-600');
+                    
+                    // 显示对应内容
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.add('hidden');
+                    });
+                    document.getElementById(tabId + '-tab').classList.remove('hidden');
+                });
+            });
+            
+            // 重新测试按钮
+            document.getElementById('btn-retake-test').addEventListener('click', function() {
+                // 重置测试
+                currentQuestion = 0;
+                userAnswers = new Array(questions.length).fill(null);
+                showPage('code-verification-page');
+                document.getElementById('code-input').value = '';
+                document.getElementById('code-error').classList.add('hidden');
+            });
+            
+            // 分享结果按钮
+            document.getElementById('btn-share-result').addEventListener('click', function() {
+                // 准备分享内容
+                prepareShareContent();
+                showPage('share-page');
+            });
+            
+            // 返回结果按钮
+            document.getElementById('btn-back-result').addEventListener('click', function() {
+                showPage('result-page');
+            });
+            
+            // 保存结果按钮
+            document.getElementById('btn-save-result').addEventListener('click', function() {
+                alert('结果已保存到您的账户');
+            });
+            
+            // 下载报告按钮
+            document.getElementById('btn-download-image').addEventListener('click', function() {
+                alert('报告已开始下载');
+            });
+        }
+        
+        // 显示指定页面
+        function showPage(pageId) {
+            // 隐藏所有页面
+            document.querySelectorAll('#page-container > section').forEach(page => {
+                page.classList.add('hidden');
+            });
+            
+            // 显示指定页面
+            document.getElementById(pageId).classList.remove('hidden');
+            
+            // 更新当前页面
+            currentPage = pageId;
+            
+            // 如果是结果页面，渲染图表
+            if (pageId === 'result-page') {
+                renderCharts();
+            }
+        }
+        
+        // 显示科学依据模态框
+        function showScienceModal() {
+            const modalContainer = document.getElementById('modal-container');
+            modalContainer.innerHTML = `
+                <div class="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-2xl font-bold text-gray-800">科学依据</h3>
+                            <button class="close-modal text-gray-500 hover:text-gray-700">
+                                <i class="fa fa-times text-xl"></i>
+                            </button>
+                        </div>
+                        <div class="prose max-w-none">
+                            <p>EYT 个人天赋潜能测评基于哈佛大学霍华德·加德纳教授的多元智能理论，该理论于1983年在《智力的结构》一书中首次提出。</p>
+                            <h4>多元智能理论的核心观点</h4>
+                            <p>传统的智力理论认为人类的智力是单一的、可量化的能力，而加德纳的多元智能理论则认为：</p>
+                            <ul>
+                                <li>人类的智力是多元的，至少包括八种相对独立的智能形式</li>
+                                <li>每种智能都有其独特的发展路径和表现形式</li>
+                                <li>个体在不同智能领域的发展水平存在差异</li>
+                                <li>智能的发展受到遗传、环境和教育等多种因素的影响</li>
+                            </ul>
+                            <h4>EYT 扩展的十大智能维度</h4>
+                            <p>EYT 个人天赋潜能测评在加德纳八项智能的基础上，结合现代心理学研究成果，扩展为十个维度：</p>
+                            <ul>
+                                <li>A. 语言智能</li>
+                                <li>B. 逻辑-数学智能</li>
+                                <li>C. 空间智能</li>
+                                <li>D. 内省智能</li>
+                                <li>E. 人际智能</li>
+                                <li>F. 身体-动觉智能</li>
+                                <li>G. 音乐智能</li>
+                                <li>H. 自然智能</li>
+                                <li>I. 创造智能</li>
+                                <li>J. 美学智能</li>
+                            </ul>
+                            <h4>测试的信度和效度</h4>
+                            <p>EYT 个人天赋潜能测评经过严格的心理学测量学检验：</p>
+                            <ul>
+                                <li>内部一致性信度：Cronbach's α 系数 > 0.85</li>
+                                <li>重测信度：间隔4周的重测相关系数 > 0.80</li>
+                                <li>结构效度：通过探索性因子分析和验证性因子分析验证</li>
+                                <li>效标关联效度：与相关职业成就和学业表现有显著相关性</li>
+                            </ul>
+                            <p>测试结果仅供参考，不应用于人员选拔或其他高风险决策。</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // 显示模态框
+            modalContainer.classList.remove('hidden');
+            
+            // 绑定关闭按钮事件
+            modalContainer.querySelector('.close-modal').addEventListener('click', function() {
+                modalContainer.classList.add('hidden');
+            });
+        }
+        
+        // 显示隐私保护模态框
+        function showPrivacyModal() {
+            const modalContainer = document.getElementById('modal-container');
+            modalContainer.innerHTML = `
+                <div class="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-2xl font-bold text-gray-800">隐私保护</h3>
+                            <button class="close-modal text-gray-500 hover:text-gray-700">
+                                <i class="fa fa-times text-xl"></i>
+                            </button>
+                        </div>
+                        <div class="prose max-w-none">
+                            <h4>隐私政策</h4>
+                            <p>SCL量子心理研究院非常重视您的隐私保护，我们承诺：</p>
+                            <ol>
+                                <li>我们不会收集您的个人身份信息，测试过程完全匿名</li>
+                                <li>您的测试数据仅用于生成个人报告，不会与任何第三方共享</li>
+                                <li>我们采用加密技术保护您的数据安全</li>
+                                <li>您可以随时请求删除您的测试数据</li>
+                            </ol>
+                            <h4>数据使用说明</h4>
+                            <p>您的测试数据将用于：</p>
+                            <ul>
+                                <li>生成您的个人天赋潜能测评报告</li>
+                                <li>用于我们的研究目的，以改进测试工具（所有研究数据均匿名处理）</li>
+                            </ul>
+                            <h4>隐私权利</h4>
+                            <p>您有权：</p>
+                            <ul>
+                                <li>了解我们收集的数据类型和使用方式</li>
+                                <li>请求访问您的数据</li>
+                                <li>请求更正或删除您的数据</li>
+                                <li>撤回您的同意</li>
+                            </ul>
+                            <p>如果您对我们的隐私政策有任何疑问，请联系我们：privacy@scl-institute.org</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // 显示模态框
+            modalContainer.classList.remove('hidden');
+            
+            // 绑定关闭按钮事件
+            modalContainer.querySelector('.close-modal').addEventListener('click', function() {
+                modalContainer.classList.add('hidden');
+            });
+        }
+        
+        // 显示测评流程模态框
+        function showProcessModal() {
+            const modalContainer = document.getElementById('modal-container');
+            modalContainer.innerHTML = `
+                <div class="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-2xl font-bold text-gray-800">测评流程</h3>
+                            <button class="close-modal text-gray-500 hover:text-gray-700">
+                                <i class="fa fa-times text-xl"></i>
+                            </button>
+                        </div>
+                        <div class="prose max-w-none">
+                            <h4>EYT 个人天赋潜能测评流程</h4>
+                            <p>完成 EYT 个人天赋潜能测评需要经过以下步骤：</p>
+                            <ol>
+                                <li>
+                                    <strong>兑换码验证</strong>
+                                    <p>输入有效的兑换码以开始测试。如果您没有兑换码，可以通过我们的官方渠道获取。</p>
+                                </li>
+                                <li>
+                                    <strong>完成测试问卷</strong>
+                                    <p>测试包含53道题目，涵盖10个天赋维度。请根据您的真实情况和第一反应选择最符合您的选项。预计用时15-20分钟。</p>
+                                </li>
+                                <li>
+                                    <strong>查看测试结果</strong>
+                                    <p>完成测试后，系统将自动计算您在各个维度的得分，并生成个性化的天赋报告，包括：</p>
+                                    <ul>
+                                        <li>天赋雷达图和柱状图</li>
+                                        <li>各维度详细解读</li>
+                                        <li>总体评价和发展建议</li>
+                                        <li>适合的职业方向</li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <strong>保存和分享</strong>
+                                    <p>您可以保存测试结果，或分享给朋友和家人。</p>
+                                </li>
+                            </ol>
+                            <h4>测试注意事项</h4>
+                            <ul>
+                                <li>请在安静的环境中完成测试，避免干扰</li>
+                                <li>请根据您的真实情况和第一反应作答，不要过度思考</li>
+                                <li>测试结果仅供参考，不应用于人员选拔或其他高风险决策</li>
+                                <li>如果您对测试结果有疑问，可以咨询专业的心理咨询师</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // 显示模态框
+            modalContainer.classList.remove('hidden');
+            
+            // 绑定关闭按钮事件
+            modalContainer.querySelector('.close-modal').addEventListener('click', function() {
+                modalContainer.classList.add('hidden');
+            });
+        }
+        
+        // 显示样本报告
+        function showSampleReport() {
+            // 生成随机结果
+            const sampleResults = {
+                'A': Math.floor(Math.random() * 30) + 70, // 70-99
+                'B': Math.floor(Math.random() * 30) + 70,
+                'C': Math.floor(Math.random() * 30) + 70,
+                'D': Math.floor(Math.random() * 30) + 70,
+                'E': Math.floor(Math.random() * 30) + 70,
+                'F': Math.floor(Math.random() * 30) + 70,
+                'G': Math.floor(Math.random() * 30) + 70,
+                'H': Math.floor(Math.random() * 30) + 70,
+                'I': Math.floor(Math.random() * 30) + 70,
+                'J': Math.floor(Math.random() * 30) + 70
+            };
+            
+            // 设置测试结果
+            testResults = sampleResults;
+            
+            // 显示结果页面
+            showPage('result-page');
+            
+            // 渲染图表和解读
+            renderCharts();
+            renderResultInterpretation();
+        }
+        
+        // 开始测试
+        function startTest() {
+            // 重置测试状态
+            currentQuestion = 0;
+            userAnswers = new Array(questions.length).fill(null);
+            
+            // 加载第一题
+            loadQuestion();
+            
+            // 显示答题页面
+            showPage('quiz-page');
+        }
+        
+        // 加载当前题目
+        function loadQuestion() {
+            const question = questions[currentQuestion];
+            const questionContainer = document.getElementById('question-container');
+            
+            // 更新题目内容
+            questionContainer.innerHTML = `
+                <div class="mb-4">
+                    <span class="inline-block px-3 py-1 bg-primary bg-opacity-10 text-primary rounded-full text-sm font-medium mb-2">
+                        ${question.dimension}. ${question.dimensionName}
+                    </span>
+                    <h3 class="text-xl font-semibold text-gray-800">${question.question}</h3>
+                </div>
+                <div class="space-y-3">
+                    ${question.options.map((option, index) => `
+                        <div class="flex items-center">
+                            <input type="radio" id="option-${index}" name="answer" value="${index + 1}" class="radio-btn" ${userAnswers[currentQuestion] === index + 1 ? 'checked' : ''}>
+                            <label for="option-${index}" class="text-gray-700 cursor-pointer">${option}</label>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            // 更新进度
+            document.getElementById('current-question').textContent = currentQuestion + 1;
+            document.getElementById('progress-value').style.width = `${(currentQuestion + 1) / questions.length * 100}%`;
+            
+            // 更新按钮状态
+            const prevButton = document.getElementById('btn-prev-question');
+            const nextButton = document.getElementById('btn-next-question');
+            
+            if (currentQuestion === 0) {
+                prevButton.disabled = true;
+                prevButton.classList.add('opacity-50', 'cursor-not-allowed');
+            } else {
+                prevButton.disabled = false;
+                prevButton.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+            
+            if (currentQuestion === questions.length - 1) {
+                nextButton.innerHTML = '<i class="fa fa-check mr-2"></i>提交';
+            } else {
+                nextButton.innerHTML = '下一题<i class="fa fa-arrow-right ml-2"></i>';
+            }
+        }
+        
+        // 计算测试结果
+        function calculateResults() {
+            // 初始化结果对象
+            const results = {
+                'A': 0, 'B': 0, 'C': 0, 'D': 0, 'E': 0,
+                'F': 0, 'G': 0, 'H': 0, 'I': 0, 'J': 0
+            };
+            
+            // 初始化维度计数器
+            const counts = {
+                'A': 0, 'B': 0, 'C': 0, 'D': 0, 'E': 0,
+                'F': 0, 'G': 0, 'H': 0, 'I': 0, 'J': 0
+            };
+            
+            // 计算各维度得分
+            for (let i = 0; i < questions.length; i++) {
+                const question = questions[i];
+                const answer = userAnswers[i];
+                
+                if (answer !== null) {
+                    results[question.dimension] += answer;
+                    counts[question.dimension]++;
+                }
+            }
+            
+            // 计算平均分并转换为0-100分制
+            for (const dimension in results) {
+                if (counts[dimension] > 0) {
+                    // 计算平均分（1-5分）
+                    const avg = results[dimension] / counts[dimension];
+                    // 转换为0-100分制
+                    results[dimension] = Math.round((avg - 1) / 4 * 100);
+                } else {
+                    results[dimension] = 0;
+                }
+            }
+            
+            // 保存测试结果
+            testResults = results;
+        }
+        
+        // 渲染图表
+        function renderCharts() {
+            // 准备图表数据
+            const labels = ['语言智能', '逻辑-数学智能', '空间智能', '内省智能', '人际智能', '身体-动觉智能', '音乐智能', '自然智能', '创造智能', '美学智能'];
+            const dimensions = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+            const data = dimensions.map(d => testResults[d]);
+            const backgroundColors = dimensions.map(d => dimensionColors[d]);
+            
+            // 渲染雷达图
+            const radarCtx = document.getElementById('radar-chart').getContext('2d');
+            if (window.radarChart) {
+                window.radarChart.destroy();
+            }
+            window.radarChart = new Chart(radarCtx, {
+                type: 'radar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: '天赋得分',
+                        data: data,
+                        backgroundColor: 'rgba(0, 47, 167, 0.2)',
+                        borderColor: 'rgba(0, 47, 167, 1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: backgroundColors,
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: backgroundColors
+                    }]
+                },
+                options: {
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                stepSize: 20
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+            
+            // 渲染柱状图
+            const barCtx = document.getElementById('bar-chart').getContext('2d');
+            if (window.barChart) {
+                window.barChart.destroy();
+            }
+            window.barChart = new Chart(barCtx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: '天赋得分',
+                        data: data,
+                        backgroundColor: backgroundColors,
+                        borderColor: 'rgba(255, 255, 255, 0.5)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+        
+        // 渲染结果解读
+        function renderResultInterpretation() {
+            // 准备结果数据
+            const dimensions = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+            const sortedDimensions = [...dimensions].sort((a, b) => testResults[b] - testResults[a]);
+            
+            // 渲染总体评价
+            const overallSummary = document.getElementById('overall-summary');
+            const top3Dimensions = sortedDimensions.slice(0, 3);
+            const top3Names = top3Dimensions.map(d => dimensionInterpretations[d].name).join('、');
+            
+            overallSummary.textContent = `您的天赋结构呈现多元化特点，其中${top3Names}表现最为突出。这些优势天赋的组合使您在相关领域具有独特的潜力和竞争力。通过有针对性的发展和培养，您可以更好地发挥这些优势，实现个人价值。`;
+            
+            // 渲染优势天赋
+            const strengthsList = document.getElementById('strengths-list');
+            strengthsList.innerHTML = '';
+            
+            top3Dimensions.forEach(d => {
+                const li = document.createElement('li');
+                li.textContent = `${dimensionInterpretations[d].name}（${testResults[d]}分）：${getScoreLevel(testResults[d])}`;
+                strengthsList.appendChild(li);
+            });
+            
+            // 渲染发展建议
+            const suggestionsList = document.getElementById('suggestions-list');
+            suggestionsList.innerHTML = '';
+            
+            const bottom3Dimensions = sortedDimensions.slice(-3);
+            bottom3Dimensions.forEach(d => {
+                const li = document.createElement('li');
+                li.textContent = `加强${dimensionInterpretations[d].name}的发展，${dimensionInterpretations[d].low.split('，')[1]}`;
+                suggestionsList.appendChild(li);
+            });
+            
+            // 渲染详细分析
+            const detailsContent = document.getElementById('details-content');
+            detailsContent.innerHTML = '';
+            
+            dimensions.forEach(d => {
+                const score = testResults[d];
+                const interpretation = dimensionInterpretations[d];
+                const scoreLevel = getScoreLevel(score);
+                
+                let scoreDescription;
+                if (score >= 80) {
+                    scoreDescription = interpretation.high;
+                } else if (score >= 60) {
+                    scoreDescription = interpretation.medium;
+                } else {
+                    scoreDescription = interpretation.low;
+                }
+                
+                const detailCard = document.createElement('div');
+                detailCard.className = 'bg-white p-6 rounded-lg shadow';
+                detailCard.innerHTML = `
+                    <div class="flex items-center justify-between mb-4">
+                        <h4 class="text-lg font-semibold text-gray-800">${interpretation.name}</h4>
+                        <div class="flex items-center">
+                            <span class="text-lg font-bold ${score >= 80 ? 'text-green-600' : score >= 60 ? 'text-blue-600' : 'text-amber-600'}">${score}</span>
+                            <span class="ml-1 text-gray-500">/100</span>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <div class="progress-bar">
+                            <div class="progress-value ${score >= 80 ? 'bg-green-500' : score >= 60 ? 'bg-blue-500' : 'bg-amber-500'}" style="width: ${score}%"></div>
+                        </div>
+                        <div class="flex justify-between mt-1 text-xs text-gray-500">
+                            <span>有待发展</span>
+                            <span>良好</span>
+                            <span>优秀</span>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 mb-3">${interpretation.description}</p>
+                    <p class="font-medium">${scoreLevel}：${scoreDescription}</p>
+                `;
+                
+                detailsContent.appendChild(detailCard);
+            });
+            
+            // 渲染职业建议
+            const careerSuggestionsContainer = document.getElementById('career-suggestions');
+            careerSuggestionsContainer.innerHTML = '';
+            
+            // 获取前三个优势维度
+            const topCareerDimensions = sortedDimensions.slice(0, 3);
+            
+            topCareerDimensions.forEach(d => {
+                const careerCard = document.createElement('div');
+                careerCard.className = 'bg-white p-4 rounded-lg shadow';
+                
+                const careers = careerSuggestions[d];
+                const randomCareers = careers.sort(() => 0.5 - Math.random()).slice(0, 3); // 随机选择3个职业
+                
+                careerCard.innerHTML = `
+                    <h4 class="font-semibold text-gray-800 mb-2">${dimensionInterpretations[d].name}相关职业</h4>
+                    <div class="flex flex-wrap gap-2">
+                        ${randomCareers.map(career => `
+                            <span class="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm">${career}</span>
+                        `).join('')}
+                    </div>
+                `;
+                
+                careerSuggestionsContainer.appendChild(careerCard);
+            });
+        }
+        
+        // 获取得分等级描述
+        function getScoreLevel(score) {
+            if (score >= 80) {
+                return '优秀';
+            } else if (score >= 60) {
+                return '良好';
+            } else if (score >= 40) {
+                return '一般';
+            } else {
+                return '有待发展';
+            }
+        }
+        
+        // 准备分享内容
+        function prepareShareContent() {
+            // 准备分享亮点
+            const shareHighlights = document.getElementById('share-highlights');
+            shareHighlights.innerHTML = '';
+            
+            // 获取前三个优势维度
+            const dimensions = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+            const sortedDimensions = [...dimensions].sort((a, b) => testResults[b] - testResults[a]);
+            const top3Dimensions = sortedDimensions.slice(0, 3);
+            
+            top3Dimensions.forEach(d => {
+                const li = document.createElement('li');
+                li.textContent = `${dimensionInterpretations[d].name}：${testResults[d]}分（${getScoreLevel(testResults[d])}）`;
+                shareHighlights.appendChild(li);
+            });
+        }
+    </script>
+</body>
+</html>
